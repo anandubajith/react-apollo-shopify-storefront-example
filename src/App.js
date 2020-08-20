@@ -32,6 +32,26 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+function Header() {
+  const { loading, error, data } = useQuery(gql`
+    {
+      shop {
+        name
+        description
+      }
+    }
+  `);
+  if (loading) return <p>Loading</p>;
+  if (error) return <p className="error"> {JSON.stringify(error)} </p>;
+
+  return (
+    <header>
+      <h1>{data.shop.name} </h1>
+      <p> {data.shop.description}</p>
+    </header>
+  );
+}
+
 function Product({ title, descriptionHtml, image, maxPrice, minPrice }) {
   return (
     <div className="product">
@@ -104,7 +124,10 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <div className="App">
-        <ProductList />
+        <Header />
+        <div className="productList">
+          <ProductList />
+        </div>
       </div>
     </ApolloProvider>
   );
